@@ -1,10 +1,12 @@
-from flask import Flask
+from flask import Flask,jsonify,request
 from flask.helpers import send_from_directory;
 from flask_cors import CORS, cross_origin;
 
 
-app = Flask(__name__,static_folder='my-app/build', static_url_path='')
-cors = CORS(app)
+
+app = Flask(__name__)
+CORS(app)
+
 
 @app.route('/api',methods=['GET'])
 @cross_origin()
