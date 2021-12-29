@@ -64,3 +64,4 @@ plt.title("Distribucion de los valores")
 plt.xlabel("Decile")
 plt.ylabel("# values")
 plt.show()
+
