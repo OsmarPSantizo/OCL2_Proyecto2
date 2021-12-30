@@ -1,19 +1,12 @@
 import React from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const Deploy = ({prop}) => {
     return(
         
-<div className="dd-wrapper">
-  <div className="dd-header">
-    <div className="dd-header-title"></div>
-    <div>{prop.tutorial}</div>
-  </div>
-  <div className="dd-list">
-    <button className="dd-list-item"></button>
-    <button className="dd-list-item"></button>
-    <button className="dd-list-item"></button>
-  </div>
-</div>
+<div>
+            <h1 className="Calc">Tendencia de la infección por Covid-19 en un País.</h1>
+        </div>
 
         
     ) 
