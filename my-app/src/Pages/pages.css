@@ -1,0 +1,29 @@
+h1{
+    text-align: center;
+}
+#contenedor {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  #contenedor  .div {
+    width: 50%;
+  }
+
+
+  .leftside, .rightside{
+      text-align: center;
+      height: 75vh;;
+      width: 100%;
+      padding-left: 10%;
+      padding-right: 10%;
+  }
+
+  .leftside{
+    background: white;
+  }
+
+  .rightside{
+      background: white;
+  }
