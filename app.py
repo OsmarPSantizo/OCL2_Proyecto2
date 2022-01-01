@@ -6,112 +6,113 @@ from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 from matplotlib import pyplot as plt
 from collections import Counter
+import numpy as np
+from io import StringIO
+
 
 
 UPLOAD_FOLDER = '\archivitos'
 
 
 app = Flask(__name__,static_folder='templates', static_url_path='')
+archivotrabajar= """"""
 CORS(app)
-@app.route('/api',methods=['GET'])
-@cross_origin()
-def index():
-    df = pd.read_csv("Libro1.csv") # data frame
-
-
-    le = preprocessing.LabelEncoder() # 
-
-    x1_encoded = le.fit_transform(df['x1'].to_numpy()) #Aquí la codificamos con fit_transform se le envia data frame la columna x1, lo pasamos a un arreglo con to_numpy
-    x2_encoded = le.fit_transform(df['x2'].to_numpy())#Aquí la codificamos con fit_transform se le envia data frame la columna x2, lo pasamos a un arreglo con to_numpy
-    y_encoded = le.fit_transform(df['y'].to_numpy())#Aquí la codificamos con fit_transform se le envia data frame la columna y, lo pasamos a un arreglo con to_numpy
-
-
-    return{
-        "tutorial": "Flask React "+ str(x1_encoded) + " " + str(x2_encoded) + " " + str(y_encoded)
-    }
-
-
-@app.route('/prueba',methods=['POST'])
-@cross_origin()
-def prueba():
-    df = pd.read_csv("archivo1.csv") # data frame
-    data = request.get_json(force=True)
-    fecha = data['fecha']
-    dias = data['dias']
-    casos = data['casos']
-    trend = linear_model.LinearRegression()
-    # plt.plot(df[dias],df[casos],color='blue', marker='o',linestyle ='solid')
-    # plt.title("Line Chart") # Titulo
-    # plt.xlabel("dias") # titulo ejex
-    # plt.ylabel("casos") #titulo ejey
-    # plt.show()
-
-
-    return jsonify("data: Si jalé bien los datos")
-
 
 @app.route('/reportes',methods=['POST'])
 @cross_origin()
 def reportes():
     dataweb = request.get_json(force =True)
-    data = dataweb['reporte']
+    reporte = dataweb['reporte']
+    archivotrabajar = StringIO(dataweb['content'])
+    tipoarchivo = dataweb['tipoa']
+    if tipoarchivo == "csv":
+        df = pd.read_csv(archivotrabajar) # data frame
+    elif tipoarchivo == "xls":
+        df = pd.read_excel(archivotrabajar) # data frame
+    else:
+        return  jsonify({"Reporte": "El tipo de archivo no es compatible"})
 
-    if (data == 1 ):
-        df = pd.read_csv("archivo1.csv") # data frame
-        data = request.get_json(force=True)
-        fecha = data['fecha']
-        dias = data['dias']
-        casos = data['casos']
+    if (reporte == 1 ):
+        
+        fecha = dataweb['fecha']
+        dias = dataweb['dias']
+        casos = dataweb['casos']
+        plt.plot(df[dias],df[casos],color='blue', marker='o',linestyle ='solid')
+        plt.title("Line Chart") # Titulo
+        plt.xlabel("dias") # titulo ejex
+        plt.ylabel("casos") #titulo ejey
+        plt.show()
+                
       
-        return jsonify({"Reporte": "Este es el reporte 1"})
-    elif(data == 2 ):
-        return jsonify({"Reporte": "Este es el reporte 2"})
-    elif(data == 3 ):
-        return jsonify({"Reporte": data})
-    elif(data == 4 ):
-        return jsonify({"Reporte": data})
-    elif(data == 5 ):
-        return jsonify({"Reporte": data})
-    elif(data == 6 ):
-        return jsonify({"Reporte": data})
-    elif(data == 7 ):
-        return jsonify({"Reporte": data})
-    elif(data == 8 ):
-        return jsonify({"Reporte": data})
-    elif(data == 9 ):
-        return jsonify({"Reporte": data})
-    elif(data == 10 ):
-        return jsonify({"Reporte": data})
-    elif(data == 11 ):
-        return jsonify({"Reporte": data})
-    elif(data == 12 ):
-        return jsonify({"Reporte": data})
-    elif(data == 13 ):
-        return jsonify({"Reporte": data})
-    elif(data == 14 ):
-        return jsonify({"Reporte": data})
-    elif(data == 15 ):
-        return jsonify({"Reporte": data})
-    elif(data == 16 ):
-        return jsonify({"Reporte": data})
-    elif(data == 17 ):
-        return jsonify({"Reporte": data})
-    elif(data == 18 ):
-        return jsonify({"Reporte": data})
-    elif(data == 19 ):
-        return jsonify({"Reporte": data})
-    elif(data == 20 ):
-        return jsonify({"Reporte": data})
-    elif(data == 21 ):
-        return jsonify({"Reporte": data})
-    elif(data == 22 ):
-        return jsonify({"Reporte": data})
-    elif(data == 23 ):
-        return jsonify({"Reporte": data})
-    elif(data == 24 ):
-        return jsonify({"Reporte": data})
-    elif(data == 25 ):
-        return jsonify({"Reporte": data})
+        return jsonify({"Reporte": "Este es el reporte 1 " })
+    elif(reporte == 2 ):
+        
+        prediccion = dataweb['predic']
+        dias = dataweb['dias']
+        casos = dataweb['casos']
+        x = np.asarray(df[dias]).reshape(-1,1)
+        y = df[casos]
+
+        regr = linear_model.LinearRegression()
+        regr.fit(x,y)
+        y_pred = regr.predict(x)
+
+        plt.scatter(x,y, color='black')
+        plt.plot(x,y_pred,color='blue',linewidth=3)
+
+        plt.ylim(0,5000)
+        plt.show()
+        print(regr.coef_)
+        print(regr.predict([[prediccion]]))
+
+
+        return jsonify({"Reporte": str(regr.predict([[prediccion]]))})
+    elif(reporte == 3 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 4 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 5 ):
+        return jsonify({"Reporte":reporte})
+    elif(reporte == 6 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 7 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 8 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 9 ):
+        return jsonify({"Reporte":reporte})
+    elif(reporte == 10 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 11 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte== 12 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 13 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 14 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 15 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 16 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 17 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 18 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 19 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 20 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 21 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 22 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 23 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 24 ):
+        return jsonify({"Reporte": reporte})
+    elif(reporte == 25 ):
+        return jsonify({"Reporte": reporte})
 
 
 
