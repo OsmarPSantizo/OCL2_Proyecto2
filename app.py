@@ -37,14 +37,14 @@ def reportes():
         fecha = dataweb['fecha']
         dias = dataweb['dias']
         casos = dataweb['casos']
-        plt.plot(df[dias],df[casos],color='blue', marker='o',linestyle ='solid')
-        plt.title("Line Chart") # Titulo
-        plt.xlabel("dias") # titulo ejex
-        plt.ylabel("casos") #titulo ejey
-        plt.show()
+        # plt.plot(df[dias],df[casos],color='blue', marker='o',linestyle ='solid')
+        # plt.title("Line Chart") # Titulo
+        # plt.xlabel("dias") # titulo ejex
+        # plt.ylabel("casos") #titulo ejey
+        # plt.show()
                 
       
-        return jsonify({"Reporte": "Este es el reporte 1 " })
+        return jsonify({"Reporte": dias })
     elif(reporte == 2 ):
         
         prediccion = dataweb['predic']
