@@ -57,11 +57,11 @@ def reportes():
         regr.fit(x,y)
         y_pred = regr.predict(x)
 
-        plt.scatter(x,y, color='black')
-        plt.plot(x,y_pred,color='blue',linewidth=3)
+        # plt.scatter(x,y, color='black')
+        # plt.plot(x,y_pred,color='blue',linewidth=3)
 
-        plt.ylim(0,5000)
-        plt.show()
+        # plt.ylim(0,5000)
+        # plt.show()
         print(regr.coef_)
         print(regr.predict([[prediccion]]))
 

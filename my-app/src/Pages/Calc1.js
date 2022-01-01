@@ -29,7 +29,7 @@ const  Consulting = () => {
     };
    
 
-    fetch('hhttps://powerful-tundra-15123.herokuapp.com/reportes',options)
+    fetch('https://powerful-tundra-15123.herokuapp.com/reportes',options)
     .then(resp =>{
       if(resp.status ===200) return resp.json();
       else alert("Erroooooor")
