@@ -30,17 +30,9 @@ import Calc23 from "./Pages/Calc23";
 import Calc24 from "./Pages/Calc24";
 import Calc25 from "./Pages/Calc25";
 
-function App() {
-  // const [state,setState]= useState({})
 
-  // useEffect(()=> {
-  //   fetch("/api").then(response=>{
-  //     if(response.status == 200){
-  //       return response.json()
-  //     }
-  //   }).then(data => setState(data))
-  //   .then(error => console.log(error))
-  // },[])
+function App() {
+  
   return (
     <>
       <BrowserRouter>

@@ -2,11 +2,13 @@
 import React, {useState} from "react";
 import "./pages.css"
 import {Form} from 'react-bootstrap'
+import { Bar } from 'react-chartjs-2'
 
 
 
 
-const Calc2 = ()=>{
+
+function Calc2 (){
 
     const [pais2, setpais] = useState("")
     const [casos2, setcasos] = useState("")
@@ -37,11 +39,11 @@ const Calc2 = ()=>{
       fetch('https://powerful-tundra-15123.herokuapp.com/reportes',options)
       .then(resp =>{
         if(resp.status ===200) return resp.json();
-        else alert("Erroooooor")
+        else alert("Si sale esto. Creo que no ganaré compi :C")
       })
       .then(data =>{
-        setrespuesta(data.Reporte)
-        console.log("Si se pudooo",data)
+        setrespuesta("Los infectados serán " + data.Reporte)
+      
       })
       .catch(error =>{
         console.error("Hubo un error!!!",error)
@@ -58,6 +60,8 @@ const Calc2 = ()=>{
         }
         reader.readAsText(file)      
       }
+
+      
 
     return(
         <div>
@@ -83,8 +87,6 @@ const Calc2 = ()=>{
               <Form.Label>Dia a predecir</Form.Label>
               <Form.Control name="prediccion" placeholder="Ingrese día a predecir" value={prediccion2} onChange={(e)=> setprediccion(e.target.value)}></Form.Control>
               </Form.Group>
-             
-          
               
               <br></br>
               <button onClick={handleClick}>Consultar</button>
@@ -100,11 +102,10 @@ const Calc2 = ()=>{
           <div className = "rightside">
           
           <h1>Grafica</h1>
-            
-          <h5>{respuestaa}</h5>
-          <div>
-            
-          </div>
+         
+             
+          <h5> {respuestaa}</h5>
+          
           </div>
         </div>
 

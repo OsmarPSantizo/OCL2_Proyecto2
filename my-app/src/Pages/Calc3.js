@@ -1,7 +1,7 @@
 import React from "react";
 import {Bar} from 'react-chartjs-2'
 
-function Calc2(){
+function Calc3(){
     return(
         <div>
             <h1 className="Calc">Indice de Progresión de la pandemia.</h1>
@@ -53,4 +53,4 @@ function Calc2(){
 
 }
 
-export default Calc2;
+export default Calc3;
