@@ -18,10 +18,9 @@ import datetime as dt
 
 
 
-
-
 UPLOAD_FOLDER = '\archivitos'
 
+listagraficas = [1000]
 
 app = Flask(__name__,static_folder='templates', static_url_path='')
 archivotrabajar= """"""
@@ -36,11 +35,17 @@ def plot_png():
     return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    xs = range(100)
-    ys = [random.randint(1, 50) for x in xs]
-    axis.plot(xs, ys)
+    np.random.seed(19680801)  # seed the random number generator.
+    data = {'a': np.arange(50),
+            'c': np.random.randint(0, 50, 50),
+            'd': np.random.randn(50)}
+    data['b'] = data['a'] + 10 * np.random.randn(50)
+    data['d'] = np.abs(data['d']) * 100
+
+    fig, ax = plt.subplots(figsize=(5, 2.7), layout='constrained')
+    ax.scatter('a', 'b', c='c', s='d', data=data)
+    ax.set_xlabel('entry a')
+    ax.set_ylabel('entry b')
     return fig
 
 

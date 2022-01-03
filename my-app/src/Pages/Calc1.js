@@ -105,7 +105,7 @@ function  Calc1 (){
           <h1>Graficaa</h1>
 
    
-        
+          <button>Descargar PDF</button>
           </div>
         </div>
 

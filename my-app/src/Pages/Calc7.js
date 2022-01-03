@@ -4,14 +4,30 @@ import {Form} from 'react-bootstrap'
 import { PolarAreaController } from "chart.js";
 
 function Calc7(){
-    const [fecha2, setfecha] = useState("")
+
+  const [fecha2, setfecha] = useState("")
   const [casos2, setcasos] = useState("")
   const [fpais2, setfpais] = useState("")
   const [npais2, setnpais] = useState("")
   const [respuestaa, setrespuesta] = useState("No se que reporte soy")
+  const [grafica2, setgrafica] = useState();
+
    // Para el manejo de archivo
   const [contenidoArchvio, setcontenido]= useState("")
   const [tipoarchivo, setipoarchivo] = useState("")
+
+
+
+async function getgrafica (event){
+    event.preventDefault()
+    const response = await fetch("https://powerful-tundra-15123.herokuapp.com/plot.png");
+    const data = await response.blob()
+    const imageObjectUrl = URL.createObjectURL(data)
+    console.log(imageObjectUrl)
+    setgrafica(imageObjectUrl)
+    
+  }
+  
   const handleClick =(event) =>{
     event.preventDefault();
     const options ={
@@ -41,6 +57,18 @@ function Calc7(){
     })
   }
 
+
+
+  async function handleFile(event){
+    event.preventDefault();
+    var file = event.target.files[0]
+    setipoarchivo(file.name.split(".")[1])
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      setcontenido(event.target.result)
+    }
+    reader.readAsText(file)      
+  }
 
 
   async function handleFile(event){
@@ -85,11 +113,8 @@ function Calc7(){
           
               
               <br></br>
-              <button onClick={handleClick}>Consultar</button>
-              
-
-
-
+              <button onClick={handleClick} >Consultar</button>
+              <button onClick={getgrafica}>Mostrar Grafica</button>
             </Form>
          
           </div>
@@ -98,9 +123,7 @@ function Calc7(){
           <div className = "rightside">
           <h1>{respuestaa}</h1>
           <h1>Graficaa</h1>
-
-          <img src="/plot.png" alt="my plot"/>
-        
+          <img  src={grafica2}/>      
           </div>
         </div>
 
