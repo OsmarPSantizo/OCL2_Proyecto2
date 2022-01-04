@@ -103,7 +103,7 @@ function Calc13(){
         </div>
         <div className ="col no-gutters">
           <div className = "rightside">
-          <b>Reporte</b>
+          <h3>Grafica</h3>
           <br></br>
           <div><img  src={grafica2}/>  </div>
           

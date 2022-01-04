@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./pages.css"
-import {Form} from 'react-bootstrap'
+import {Form, Button} from 'react-bootstrap'
 
 function Calc19(){
     const [canio2, setcanio] = useState("")
@@ -78,7 +78,7 @@ function Calc19(){
         reader.readAsText(file)      
       }
     return(
-        <div>
+      <div className="titulo">
             <h1 className="Calc">Predicción de muertes en el último día del primer año de infecciones en un país.</h1>
             <div className="row no-gutters">
             <div className = "col no-gutters">
@@ -107,7 +107,8 @@ function Calc19(){
               <Form.Control name="nanio" placeholder="Año a calcular" value={nanio2} onChange={(e)=> setnanio(e.target.value)}></Form.Control>
               </Form.Group>
               <br></br>
-              <button onClick={handleClick} >Consultar Muertes al último dia del año</button>
+              <Button className="botones" onClick={handleClick} >Consultar Muertes al último dia del año</Button>
+              
             </Form>
          
           
@@ -116,8 +117,11 @@ function Calc19(){
         <div className ="col no-gutters">
           <div className = "rightside">
           <h3>Grafica</h3>
-          <img  src={grafica2}/>  
-          <button onClick={getgrafica}>Mostrar Grafica</button>
+          <br></br>
+          <div><img  src={grafica2}/>  </div>
+          
+          <br></br>
+          <Button className="botones" onClick={getgrafica}>Mostrar Grafica</Button>
           <h5>{respuestaa}</h5>     
           </div>
         </div>
