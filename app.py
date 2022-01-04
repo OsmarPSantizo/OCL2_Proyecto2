@@ -838,9 +838,33 @@ def reportes():
 
 
     elif(reporte == 13 ): #Muertes promedio por casos confirmados y edad de covid 19 en un País.
-        
+        cpais = dataweb['cpais']        
+        npais = dataweb['npais']        
+        confirmados = dataweb['confirmados']
+        muertos = dataweb['cmuertos']
+        dfn = df.loc[df[cpais] == npais]
 
-        return jsonify({"Reporte": reporte}) 
+        x = np.asarray(dfn[confirmados])
+        y = np.asarray(dfn[muertos])
+        y_prom = sum(y)/len(y) 
+        x_prom = sum(x)
+        
+        
+        porcentaje = ((y_prom)/(x_prom))*100
+        print(porcentaje)
+        labels = 'Muertes', 'Casos Activos'
+
+        sizes = [porcentaje, 100-porcentaje]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, autopct='%1.1f%%',shadow=True, startangle=90)
+        ax1.axis('equal')
+        ax1.legend(labels)
+        ax1.set_title('No se grafica')
+        listagraficas[0] = fig1
+
+        return jsonify({"Reporte": "Las muertes promedio por casos confirmados son " + str(round(y_prom,2))})
+
     elif(reporte == 14 ): #Muertes según regiones de un país - Covid 19.
         cpais = dataweb['cpais']        
         npais = dataweb['npais']        
@@ -980,8 +1004,34 @@ def reportes():
         return jsonify({"Reporte": "La tasa de comportamiento de casos activos en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
         
     elif(reporte == 18 ): #Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País.
+        dias= dataweb['dias']
+        casos = dataweb['casos']
+        cpais = dataweb['cpais']
+        npais = dataweb['npais']
+        cdepar = dataweb['cdepar']
+        ndepar = dataweb['ndepar']
+        #Filtro pais
+        dfn = df.loc[df[cpais] == npais]
+        #Filtro Municipio
+        dfn2 = dfn.loc[dfn[cdepar] == ndepar]
+        #dfn[fecha] = pd.to_datetime(dfn[fecha])
+        x = np.asarray(dfn2[dias]).reshape(-1,1)
+        y = np.asarray(dfn2[casos])
         
-        return jsonify({"Reporte": reporte})
+        regr = linear_model.LinearRegression()
+        regr.fit(x,y)
+        y_pred = regr.predict(x)
+        fig,ax = plt.subplots(layout='constrained')
+        # plot the prediction
+        ax.scatter(x,y, color='black')
+        ax.plot(x,y_pred,color='blue',linewidth=3)
+        ax.set_xlabel('Dias')
+        ax.set_ylabel('Casos')
+        listagraficas[0] = fig
+
+        print(regr.coef_)
+        print(regr.predict([[20]]))
+        return jsonify({"Reporte": "La grafica muestra el comportamiento lineal simple de las personas infectadas por COVID-19 con un coeficiente "})
 
 
     elif(reporte == 19 ): #Predicción de muertes en el último día del primer año de infecciones en un país.
@@ -1035,8 +1085,32 @@ def reportes():
 
 
     elif(reporte == 20 ): #Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19
+        cpais = dataweb['pais']        
+        npais = dataweb['npais']        
+        confirmados = dataweb['confirmados']
+        muertos = dataweb['muertos']
+        dfn = df.loc[df[cpais] == npais]
 
-        return jsonify({"Reporte": "A ver si sale"})
+        x = np.asarray(dfn[confirmados])
+        y = np.asarray(dfn[muertos])
+        y_prom = sum(y) 
+        x_prom = sum(x)
+        
+        
+        porcentaje = ((y_prom)/(x_prom))*100
+        print(porcentaje)
+        labels = 'Muertes(Tasa de mortalidad)', 'Tasa de crecimiento'
+
+        sizes = [porcentaje, 100-porcentaje]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, autopct='%1.1f%%',shadow=True, startangle=90)
+        ax1.axis('equal')
+        ax1.legend(labels)
+        ax1.set_title('Tasa de Mortalidad de ' + str(npais))
+        listagraficas[0] = fig1
+
+        return jsonify({"Reporte": "La tasa de mortalidad por COVID-19 en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%" + "La tasa de crecimiento es de " + str(round(100-porcentaje,1)) + "%"})
 
 
     elif(reporte == 21 ): #Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor

@@ -1,8 +1,6 @@
-
 import React, {useState} from "react";
 import "./pages.css"
-import {Form} from 'react-bootstrap'
-
+import {Form, Button} from 'react-bootstrap'
 
 function Calc15(){
 const [dias2, setdias] = useState("")
@@ -72,8 +70,8 @@ async function getgrafica (event){
     reader.readAsText(file)      
   }
     return(
-        <div>
-            <h1 className="Calc">Tendencia de casos confirmados de Coronavirus en un departamento de un País..</h1>
+      <div className="titulo">
+            <strong className="Calc">Tendencia de casos confirmados de Coronavirus en un departamento de un País..</strong>
             <div className="row no-gutters">
         <div className = "col no-gutters">
 
@@ -107,20 +105,21 @@ async function getgrafica (event){
           
               
               <br></br>
-              <button onClick={handleClick} >Consultar</button>
+              <Button className="botones" onClick={handleClick} >Consultar</Button>
             </Form>
          
           </div>
         </div>
         <div className ="col no-gutters">
           <div className = "rightside">
-          <h3>Grafica</h3>
+          <b>Reporte</b>
+          <br></br>
           <img  src={grafica2}/>  
-          <button onClick={getgrafica}>Mostrar Grafica</button>
+          <br></br>
+          <Button className="botones" onClick={getgrafica}>Mostrar Grafica</Button>
           <h5>{respuestaa}</h5>     
           </div>
         </div>
-
     </div>
         </div>
     );

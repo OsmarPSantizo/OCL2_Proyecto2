@@ -6,19 +6,19 @@ Para el proyecto de Coronavirus Data Analysis with Machine Learnign, se utilizar
 
 ![](Aspose.Words.a2e66b1b-a760-4ce4-97ff-09356c607250.001.png)![](Aspose.Words.a2e66b1b-a760-4ce4-97ff-09356c607250.002.png)
 
-Scikit learn: para hacer todos los cálculos de Machine Learning, se instaló  con el siguiente comando **pip install -U scikit-learn** 
+**Scikit learn:** para hacer todos los cálculos de Machine Learning, se instaló  con el siguiente comando **pip install -U scikit-learn** 
 
 ![](Aspose.Words.a2e66b1b-a760-4ce4-97ff-09356c607250.003.png)
 
-Matplotlib: Esta librería se utilizó para hacer las gráficas con los datos obtenidos en scikit learn, se instaló con el siguiente comando **pip install matplotlib** 
+**Matplotlib:** Esta librería se utilizó para hacer las gráficas con los datos obtenidos en scikit learn, se instaló con el siguiente comando **pip install matplotlib** 
 
 ![](Aspose.Words.a2e66b1b-a760-4ce4-97ff-09356c607250.004.png)
 
-React Js: Este framework se utilizó para el front-end de la aplicación. 
+**React Js:** Este framework se utilizó para el front-end de la aplicación. 
 
 ![](Aspose.Words.a2e66b1b-a760-4ce4-97ff-09356c607250.005.png)
 
-Heroku: Se utilizó para hacer el deploy de la aplicación en un servidor 
+**Heroku:** Se utilizó para hacer el deploy de la aplicación en un servidor 
 
 ![](Aspose.Words.a2e66b1b-a760-4ce4-97ff-09356c607250.006.png)
 

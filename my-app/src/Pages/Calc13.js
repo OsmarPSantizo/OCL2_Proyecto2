@@ -8,8 +8,7 @@ function Calc13(){
     const [npais2,setnpais]=useState("")
     const[ccasos2,setccasos]=useState("")
     const[cedad2,setcedad]=useState("")
-    const[cpruebas2,setcpruebas]=useState("")
-    const[nedad2,setnedad]=useState("")
+    const[cmuertos2,setcmuertos]=useState("")
     const [respuestaa, setrespuesta] = useState("")
     const [grafica2, setgrafica] = useState();
 
@@ -18,7 +17,7 @@ function Calc13(){
 
     async function getgrafica (event){
         event.preventDefault()
-        const response = await fetch("http://127.0.0.1:5000/plot.png");
+        const response = await fetch("https://powerful-tundra-15123.herokuapp.com/plot.png");
         const data = await response.blob()
         const imageObjectUrl = URL.createObjectURL(data)
         console.log(imageObjectUrl)
@@ -33,15 +32,16 @@ function Calc13(){
             reporte: 13,
             content: contenidoArchvio,
             tipoa: tipoarchivo,
-            confirmados:confirmados2,
+            confirmados:ccasos2,
             cpais: cpais2,
-            npais:npais2
+            npais:npais2,
+            cmuertos:cmuertos2
             
           })
         };
        
     
-        fetch('http://127.0.0.1:5000/reportes',options)
+        fetch('https://powerful-tundra-15123.herokuapp.com/reportes',options)
         .then(resp =>{
           if(resp.status ===200) return resp.json();
           else alert("Si sale esto. Creo que no ganaré compi :C")
@@ -85,17 +85,15 @@ function Calc13(){
               <Form.Control name="casos" placeholder="Columna para Casos" value={ccasos2} onChange={(e)=> setccasos(e.target.value)}></Form.Control>
               <Form.Label>Selecciona la columna para Edad</Form.Label>
               <Form.Control name="confirmados" placeholder="Columna para Edad" value={cedad2} onChange={(e)=> setcedad(e.target.value)}></Form.Control>
-              <Form.Label>Selecciona la columna para Pruebas</Form.Label>
-              <Form.Control name="pruebas" placeholder="Columna para pruebas" value={cpruebas2} onChange={(e)=> setcpruebas(e.target.value)}></Form.Control>
+              <Form.Label>Selecciona la columna para Muertos</Form.Label>
+              <Form.Control name="pruebas" placeholder="Columna para muertos" value={cmuertos2} onChange={(e)=> setcmuertos(e.target.value)}></Form.Control>
               <Form.Label>Selecciona la columna para País</Form.Label>
-              <Form.Control name="pais" placeholder="Columna para pruebas" value={cpais2} onChange={(e)=> setcpais(e.target.value)}></Form.Control>
+              <Form.Control name="pais" placeholder="Columna para pais" value={cpais2} onChange={(e)=> setcpais(e.target.value)}></Form.Control>
               </Form.Group>
               <h3>Datos</h3>
               <Form.Group>
               <Form.Label>Ingresa el pais a calcular</Form.Label>
               <Form.Control name="npais" placeholder="Pais" value={npais2} onChange={(e)=> setnpais(e.target.value)}></Form.Control>
-              <Form.Label>Ingresa la edad a calcular</Form.Label>
-              <Form.Control name="nedad" placeholder="Edad" value={nedad2} onChange={(e)=> setnedad(e.target.value)}></Form.Control>
               </Form.Group>
               <br></br>
               <Button className="botones" onClick={handleClick} >Calcular</Button>
