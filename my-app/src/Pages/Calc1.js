@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import "./pages.css"
 import {Form,Button} from 'react-bootstrap'
-// import {jsPDF} from 'jspdf'
+import {jsPDF} from 'jspdf'
 
 
 function  Calc1 (){
@@ -17,14 +17,14 @@ function  Calc1 (){
   const [tipoarchivo, setipoarchivo] = useState("")
 
 
-    // const pdfGenerate = (event) =>{
-    //   event.preventDefault();
-    //   var doc = new jsPDF('landscape','px','a4','false');
-    //   doc.addImage(grafica2,'PNG',65,20,500,400)
-    //   doc.save('reporte.pdf')
+    const pdfGenerate = (event) =>{
+      event.preventDefault();
+      var doc = new jsPDF('landscape','px','a4','false');
+      doc.addImage(grafica2,'PNG',65,20,500,400)
+      doc.save('reporte.pdf')
       
 
-    // }
+    }
 
 
   async function getgrafica (event){
@@ -129,7 +129,7 @@ function  Calc1 (){
           <Button className="botones"onClick={getgrafica}>Mostrar Grafica</Button>
           <h3>{respuestaa}</h3>
           <br></br>
-          {/* <Button className="botones" onClick={pdfGenerate}>Descargar PDF</Button> */}
+          <Button className="botones" onClick={pdfGenerate}>Descargar PDF</Button>
           </div>
         </div>
 

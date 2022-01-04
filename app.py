@@ -248,7 +248,7 @@ def reportes():
         ax.set_ylabel('Casos')
         listagraficas[0] = fig
                 
-        return jsonify({"Reporte": "El indice de progresión es " + str(pendiente)})
+        return jsonify({"Reporte": "El indice de progresión es " + str(pendiente) + " , con esto podremos saber si la recta se comporta de forma descendente o ascendente"})
         
 
     elif(reporte == 4 ):  #Predicción de mortalidad por COVID en un Departamento.
@@ -316,7 +316,7 @@ def reportes():
         #ax.xlim(x_new_min,x_new_max)
         listagraficas[0] = fig
      
-        return jsonify({"Reporte": str(round(y_new[-1,-1], 2)) + " muertes para el día " + str(dt.fromordinal(prediccion)).replace('00:00:00','')})
+        return jsonify({"Reporte": str(round(y_new[-1,-1], 2)) + " muertes para el día " + str(dt.fromordinal(prediccion)).replace('00:00:00','')+" con el resultado de R2 podemos saber que tan exacto es nuestro modelo para la prediccion de datos, si está más cerca de 1 es porque nuestras variables tendrán mayor correlación"})
 
    
     elif(reporte == 5 ):  #Predicción de mortalidad por COVID en un País.
@@ -378,7 +378,7 @@ def reportes():
    
         listagraficas[0] = fig
      
-        return jsonify({"Reporte": str(round(y_new[-1,-1], 2)) + " para el día " + str(dt.fromordinal(prediccion)).replace('00:00:00','')})
+        return jsonify({"Reporte": "Habrán "+str(round(y_new[-1,-1], 2)) + "muertros para el día " + str(dt.fromordinal(prediccion)).replace('00:00:00','') +" con el resultado de R2 podemos saber que tan exacto es nuestro modelo para la prediccion de datos, si está más cerca de 1 es porque nuestras variables tendrán mayor correlación"})
 
 
     elif(reporte == 6 ):  #Análisis del número de muertes por coronavirus en un País.
@@ -721,8 +721,8 @@ def reportes():
         dias=dataweb['dias']
         dfn = df.loc[df[cpais] == npais]
 
-        x = np.asarray(dfn[confirmados])
-        y = np.asarray(dfn[confirmadosh])
+        x = np.asarray(dfn[confirmados].replace(np.nan,0))
+        y = np.asarray(dfn[confirmadosh].replace(np.nan,0))
         x_prom = sum(x)
         y_prom = sum(y) 
         
@@ -844,8 +844,8 @@ def reportes():
         muertos = dataweb['cmuertos']
         dfn = df.loc[df[cpais] == npais]
 
-        x = np.asarray(dfn[confirmados])
-        y = np.asarray(dfn[muertos])
+        x = np.asarray(dfn[confirmados].replace(np.nan,0))
+        y = np.asarray(dfn[muertos].replace(np.nan,0))
         y_prom = sum(y)/len(y) 
         x_prom = sum(x)
         
@@ -872,8 +872,8 @@ def reportes():
         muertos = dataweb['cmuertos']
         dfn = df.loc[df[cpais] == npais]
 
-        x = np.asarray(dfn[confirmados])
-        y = np.asarray(dfn[muertos])
+        x = np.asarray(dfn[confirmados].replace(np.nan,0))
+        y = np.asarray(dfn[muertos].replace(np.nan,0))
         x_prom = sum(x)
         y_prom = sum(y) 
         
@@ -894,19 +894,27 @@ def reportes():
 
 
     elif(reporte == 15 ): #Tendencia de casos confirmados de Coronavirus en un departamento de un País.
-        
+        dates = []
+        new_labels = []
         dias= dataweb['dias']
         casos = dataweb['casos']
         cpais = dataweb['cpais']
         npais = dataweb['npais']
         cdepar = dataweb['cdepar']
         ndepar = dataweb['ndepar']
+       
         #Filtro pais
         dfn = df.loc[df[cpais] == npais]
         #Filtro Departamento
         dfn2 = dfn.loc[dfn[cdepar] == ndepar]
+
+         #Convertir las fechas en ordninales
+        dfn2[dias] = pd.to_datetime(dfn2[dias],dayfirst=True,infer_datetime_format=True)
+        dfn2['date_ordinal'] = pd.to_datetime(dfn2[dias]).apply(lambda date: date.toordinal())
+        dfn2 = dfn2.groupby(['date_ordinal',cdepar],as_index=False)[casos].sum()
+
         #dfn[fecha] = pd.to_datetime(dfn[fecha])
-        x = np.asarray(dfn2[dias])[:,np.newaxis]
+        x = np.asarray(dfn2['date_ordinal'])[:,np.newaxis]
         y = np.asarray(dfn2[casos])[:,np.newaxis]
         
         # Grado 3
@@ -933,6 +941,13 @@ def reportes():
 
 
         # PARTE PARA LA GRAFICA
+        #Convertir de ordinal a fecha
+        for item in x:
+            new_date = date.fromordinal(int(item))
+            dates.append(new_date)
+        for item in dates:
+            new_labels.append(item.strftime("%d/%m/%Y"))
+
         fig,ax = plt.subplots(layout='constrained')
         # plot the prediction
         ax.scatter(x,y)
@@ -941,6 +956,7 @@ def reportes():
         ax.set_title("Tendencia de casos positivos de COVID-19 en " +str(npais) + " \nen el departamento de " +str(ndepar) + "\n " + "Grado = " + str(grados) + "; RMSE = " +str(round(rmse,2)) + " ; R2 = " + str(round(r2,2)), fontsize=10)
         ax.set_xlabel('Dias')
         ax.set_ylabel('Casos')
+        ax.set_xticks(np.asarray(dfn2['date_ordinal']),labels=new_labels) ##Agregar
         listagraficas[0] = fig
                 
         return jsonify({"Reporte": "En la grafica se puede observar el comportamiento de los confirmados con COVID-19 por día en el pais de  " +str(npais) + ", en el departamento de "+str(ndepar) })
@@ -1004,6 +1020,8 @@ def reportes():
         return jsonify({"Reporte": "La tasa de comportamiento de casos activos en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
         
     elif(reporte == 18 ): #Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País.
+        dates = []
+        new_labels = []
         dias= dataweb['dias']
         casos = dataweb['casos']
         cpais = dataweb['cpais']
@@ -1015,22 +1033,33 @@ def reportes():
         #Filtro Municipio
         dfn2 = dfn.loc[dfn[cdepar] == ndepar]
         #dfn[fecha] = pd.to_datetime(dfn[fecha])
-        x = np.asarray(dfn2[dias]).reshape(-1,1)
-        y = np.asarray(dfn2[casos])
+
+         #Convertir las fechas en ordninales
+        dfn2[dias] = pd.to_datetime(dfn2[dias],dayfirst=True,infer_datetime_format=True)
+        dfn2['date_ordinal'] = pd.to_datetime(dfn2[dias]).apply(lambda date: date.toordinal())
+        dfn2 = dfn2.groupby(['date_ordinal',cdepar],as_index=False)[casos].sum()
+
+    
+        x = np.asarray(dfn2[dias].replace(np.nan,0)).reshape(-1,1)
+        y = np.asarray(dfn2[casos].replace(np.nan,0))
         
         regr = linear_model.LinearRegression()
         regr.fit(x,y)
         y_pred = regr.predict(x)
+        for item in x:
+            new_date = date.fromordinal(int(item))
+            dates.append(new_date)
+        for item in dates:
+            new_labels.append(item.strftime("%d/%m/%Y"))
         fig,ax = plt.subplots(layout='constrained')
         # plot the prediction
         ax.scatter(x,y, color='black')
         ax.plot(x,y_pred,color='blue',linewidth=3)
         ax.set_xlabel('Dias')
         ax.set_ylabel('Casos')
+        ax.set_xticks(np.asarray(dfn2['date_ordinal']),labels=new_labels) ##Agregar
         listagraficas[0] = fig
 
-        print(regr.coef_)
-        print(regr.predict([[20]]))
         return jsonify({"Reporte": "La grafica muestra el comportamiento lineal simple de las personas infectadas por COVID-19 con un coeficiente "})
 
 
