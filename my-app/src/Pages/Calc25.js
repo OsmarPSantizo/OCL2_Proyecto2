@@ -14,7 +14,7 @@ function Calc25(){
     const [tipoarchivo, setipoarchivo] = useState("")
     async function getgrafica (event){
         event.preventDefault()
-        const response = await fetch("http://127.0.0.1:5000/plot.png");
+        const response = await fetch("https://powerful-tundra-15123.herokuapp.com/plot.png");
         const data = await response.blob()
         const imageObjectUrl = URL.createObjectURL(data)
         console.log(imageObjectUrl)
@@ -38,7 +38,7 @@ function Calc25(){
         };
        
     
-        fetch('http://127.0.0.1:5000/reportes',options)
+        fetch('https://powerful-tundra-15123.herokuapp.com/reportes',options)
         .then(resp =>{
           if(resp.status ===200) return resp.json();
           else alert("Si sale esto. Creo que no ganaré compi :C")

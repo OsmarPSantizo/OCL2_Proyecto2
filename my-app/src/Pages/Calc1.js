@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import "./pages.css"
 import {Form,Button} from 'react-bootstrap'
+// import {jsPDF} from 'jspdf'
 
-import { Chart } from 'react-chartjs-2';
 
 function  Calc1 (){
   
@@ -15,6 +15,17 @@ function  Calc1 (){
    // Para el manejo de archivo
   const [contenidoArchvio, setcontenido]= useState("")
   const [tipoarchivo, setipoarchivo] = useState("")
+
+
+    // const pdfGenerate = (event) =>{
+    //   event.preventDefault();
+    //   var doc = new jsPDF('landscape','px','a4','false');
+    //   doc.addImage(grafica2,'PNG',65,20,500,400)
+    //   doc.save('reporte.pdf')
+      
+
+    // }
+
 
   async function getgrafica (event){
     event.preventDefault()
@@ -118,7 +129,7 @@ function  Calc1 (){
           <Button className="botones"onClick={getgrafica}>Mostrar Grafica</Button>
           <h3>{respuestaa}</h3>
           <br></br>
-          <Button className="botones">Descargar PDF</Button>
+          {/* <Button className="botones" onClick={pdfGenerate}>Descargar PDF</Button> */}
           </div>
         </div>
 

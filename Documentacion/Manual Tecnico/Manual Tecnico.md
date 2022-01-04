@@ -1,4 +1,4 @@
-﻿**Manual de Usuario** 
+﻿#Manual Tecnico
 
 Para el proyecto de Coronavirus Data Analysis with Machine Learnign, se utilizaron las siguientes herramientas 
 

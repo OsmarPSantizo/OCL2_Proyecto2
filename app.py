@@ -191,9 +191,65 @@ def reportes():
 
 
     elif(reporte == 3 ):   #Indice de Progresión de la pandemia.
-       
-        return jsonify({"Reporte": reporte})
+        dates = []
+        new_labels = []
+        fpais = dataweb['pais']
+        fecha = dataweb['fecha']
+        casos = dataweb['casos']
+        npais = dataweb['npais']
+        
+        #Convertir las fechas en ordninales
+        df[fecha] = pd.to_datetime(df[fecha],dayfirst=True,infer_datetime_format=True)
+        df['date_ordinal'] = pd.to_datetime(df[fecha]).apply(lambda date: date.toordinal())
+        df = df.groupby(['date_ordinal',fpais],as_index=False)[casos].sum()
 
+        dfn = df.loc[df[fpais] == npais]
+        x = np.asarray(dfn['date_ordinal'])[:,np.newaxis]
+        y = np.asarray(dfn[casos])[:,np.newaxis]
+        
+        # Grado 3
+        grados = 3
+        caracteristicas = PolynomialFeatures(degree = grados)
+        x_transformada = caracteristicas.fit_transform(x)
+
+        #fit lineal
+        model = LinearRegression().fit(x_transformada, y)
+        y_new = model.predict(x_transformada)
+
+        # calculate rmse and r2
+        rmse = np.sqrt(mean_squared_error(y, y_new))
+        r2 = r2_score(y, y_new)
+       
+        x_new_min = x[0,0]
+        x_new_max = x[-1,-1]
+
+        x_new = np.linspace(x_new_min, x_new_max, 50)
+        x_new = x_new[:,np.newaxis]
+        pendiente = model.coef_[np.size(model.coef_)-4][3]
+        x_new_transform = caracteristicas.fit_transform(x_new)
+        y_new = model.predict(x_new_transform)
+        for item in x:
+            new_date = date.fromordinal(int(item))
+            dates.append(new_date)
+        for item in dates:
+            new_labels.append(item.strftime("%d/%m/%Y"))
+
+        new_labels = np.asarray(new_labels)
+
+        # PARTE PARA LA GRAFICA
+        fig,ax = plt.subplots(layout='constrained')
+        # plot the prediction
+        ax.scatter(x,y)
+        ax.plot(x_new, y_new, color='red', linewidth=3)
+        ax.set_xlim(x_new_min,x_new_max)
+        ax.set_title("Porgresion de la pandemia \n " + "Grado = " + str(grados) + "; RMSE = " +str(round(rmse,2)) + " ; R2 = " + str(round(r2,2)), fontsize=10)
+        ax.set_xticks(np.asarray(dfn['date_ordinal']),labels=new_labels)
+        ax.set_xlabel('Dias')
+        ax.set_ylabel('Casos')
+        listagraficas[0] = fig
+                
+        return jsonify({"Reporte": "El indice de progresión es " + str(pendiente)})
+        
 
     elif(reporte == 4 ):  #Predicción de mortalidad por COVID en un Departamento.
         
@@ -560,7 +616,7 @@ def reportes():
         return jsonify({"Reporte": "En la grafica se puede observar el comportamiento de las personas vacunadas "})
 
 
-    elif(reporte == 10 ): #Ánalisis Comparativo de Vacunaciópn entre 2 paises.
+    elif(reporte == 10 ):  #Ánalisis Comparativo de Vacunaciópn entre 2 paises.
         dates = []
         new_labels = []
         cvacunados = dataweb['cvacunados']
@@ -684,19 +740,137 @@ def reportes():
         return jsonify({"Reporte": "El porcentaje de hombres infectados por COVID-19 en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
 
     elif(reporte== 12 ):  # Ánalisis Comparativo entres 2 paises o continentes.
-         
+        dates = []
+        new_labels = []
+        ccomparacion = dataweb['ccomparacion']
+        cpais = dataweb['cpais']
+        n1pais = dataweb['n1pais']
+        n2pais = dataweb['n2pais']
+        dias = dataweb['dias']
 
-        return jsonify({"Reporte": reporte})
+        #Convertir las fechas en ordninales
+        df[dias] = pd.to_datetime(df[dias],dayfirst=True,infer_datetime_format=True)
+        df['date_ordinal'] = pd.to_datetime(df[dias]).apply(lambda date: date.toordinal())
+        df = df.groupby(['date_ordinal',cpais],as_index=False)[ccomparacion].sum()
+        dfn = df.loc[df[cpais] == n1pais]
+        x = np.asarray(dfn['date_ordinal'])
+        y = np.asarray(dfn[ccomparacion])
+
+        x = x[:,np.newaxis]
+        y = y[:,np.newaxis]
+        no_degree = 3
+        polynomial_features = PolynomialFeatures(degree= no_degree)
+        x_transf = polynomial_features.fit_transform(x)
+        model = LinearRegression()
+        model.fit(x_transf,y)
+
+        y_new = model.predict(x_transf)
+        rmse = np.sqrt(mean_squared_error(y,y_new))
+        r2 = r2_score(y,y_new)
+
+        # # Prediccion
+
+        x_new_min = 0.0
+        x_new_max = int(x[-1])
+
+        x_new = np.linspace(x_new_min, x_new_max,50)
+        x_new = x_new[:,np.newaxis]
+
+        x_new_transf = polynomial_features.fit_transform(x_new)
+
+        y_new = model.predict(x_new_transf)
+         # PARTE PARA LA GRAFICA CONFIRMADOS
+         #Convertir de ordinal a fecha
+        for item in x:
+            new_date = date.fromordinal(int(item))
+            dates.append(new_date)
+        for item in dates:
+            new_labels.append(item.strftime("%d/%m/%Y"))
+        fig,ax = plt.subplots(layout='constrained')
+        ax.plot(x_new,y_new, color ='red',linewidth=3)
+        ax.scatter(x,y)
+        ax.grid()
+
+
+
+        dfnn = df.loc[df[cpais] == n2pais]
+        x = np.asarray(dfnn['date_ordinal'])
+        y = np.asarray(dfnn[ccomparacion])
+
+        x = x[:,np.newaxis]
+        y = y[:,np.newaxis]
+        no_degree = 3
+        polynomial_features = PolynomialFeatures(degree= no_degree)
+        x_transf = polynomial_features.fit_transform(x)
+        model = LinearRegression()
+        model.fit(x_transf,y)
+
+        y_new = model.predict(x_transf)
+        rmse = np.sqrt(mean_squared_error(y,y_new))
+        r2 = r2_score(y,y_new)
+
+        # # Prediccion
+
+        x_new_min = 0.0
+        x_new_max = int(x[-1])
+
+        x_new = np.linspace(x_new_min, x_new_max,50)
+        x_new = x_new[:,np.newaxis]
+
+        x_new_transf = polynomial_features.fit_transform(x_new)
+
+        y_new = model.predict(x_new_transf)
+        # PARTE PARA LA GRAFICA MUERTOS
+
+        ax.plot(x_new,y_new, color ='blue',linewidth=3)
+        ax.scatter(x,y)
+        ax.grid()
+
+        ax.set_ylabel("Casos")
+        ax.set_xlabel("Dias")
+        ax.set_title("Comparación de" +str(ccomparacion)+ " entre "+ str(n1pais)+ " y "+ str(n2pais)+"\n"  + "RMSE: " + str(round(rmse,2)) + ", R2: "+ str(round(r2,2) ), fontsize=10)
+        
+        
+        #ax.xlim(x_new_min,x_new_max)
+        listagraficas[0] = fig
+     
+        return jsonify({"Reporte": "La grafica muestra la comparación de " +str(ccomparacion)+ " :3 " })
+
+
     elif(reporte == 13 ): #Muertes promedio por casos confirmados y edad de covid 19 en un País.
         
 
         return jsonify({"Reporte": reporte}) 
     elif(reporte == 14 ): #Muertes según regiones de un país - Covid 19.
-        
+        cpais = dataweb['cpais']        
+        npais = dataweb['npais']        
+        confirmados = dataweb['confirmados']
+        muertos = dataweb['cmuertos']
+        dfn = df.loc[df[cpais] == npais]
 
-        return jsonify({"Reporte": reporte})
+        x = np.asarray(dfn[confirmados])
+        y = np.asarray(dfn[muertos])
+        x_prom = sum(x)
+        y_prom = sum(y) 
+        
+        porcentaje = (y_prom*100)/(x_prom)
+        print(porcentaje)
+        labels = 'Muertes', 'Positivos'
+
+        sizes = [porcentaje, 100-porcentaje]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, autopct='%1.1f%%',shadow=True, startangle=90)
+        ax1.axis('equal')
+        ax1.legend(labels)
+        ax1.set_title('Porcentaje de muertes sobre casos confirmados')
+        listagraficas[0] = fig1
+
+        return jsonify({"Reporte": "El porcentaje de muertos por COVID-19 en la region de " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
+
 
     elif(reporte == 15 ): #Tendencia de casos confirmados de Coronavirus en un departamento de un País.
+        
         dias= dataweb['dias']
         casos = dataweb['casos']
         cpais = dataweb['cpais']
@@ -778,7 +952,32 @@ def reportes():
 
     elif(reporte == 17 ): #Tasa de comportamiento de casos activos en relación al número de muertes en un continente.
         
-        return jsonify({"Reporte": reporte})
+        cpais = dataweb['pais']        
+        npais = dataweb['npais']        
+        confirmados = dataweb['confirmados']
+        muertos = dataweb['muertos']
+        dfn = df.loc[df[cpais] == npais]
+
+        x = np.asarray(dfn[confirmados])
+        y = np.asarray(dfn[muertos])
+        y_prom = sum(y) 
+        x_prom = sum(x)
+        
+        
+        porcentaje = ((y_prom)/(x_prom))*100
+        print(porcentaje)
+        labels = 'Muertes', 'Casos Activos'
+
+        sizes = [porcentaje, 100-porcentaje]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, autopct='%1.1f%%',shadow=True, startangle=90)
+        ax1.axis('equal')
+        ax1.legend(labels)
+        ax1.set_title('Tasa de comportamiento de ' + str(npais))
+        listagraficas[0] = fig1
+
+        return jsonify({"Reporte": "La tasa de comportamiento de casos activos en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
         
     elif(reporte == 18 ): #Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País.
         
@@ -949,10 +1148,38 @@ def reportes():
         return jsonify({"Reporte": "La tasa de mortalidad por COVID-19 en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
 
     elif(reporte == 23 ): #Factores de muerte por COVID-19 en un país.
+        cpais = dataweb['pais']        
+        npais = dataweb['npais']     
+        nfactor = dataweb['nfactor']   
+        confirmados = dataweb['confirmados']
+        muertos = dataweb['muertos']
+        dfn = df.loc[df[cpais] == npais]
+
+        dfn2 = df.loc[dfn[confirmados] == nfactor]
+
+        x = np.asarray(dfn[confirmados])
+        y = np.asarray(dfn[muertos])
+        y_prom = sum(y) 
+        x_prom = sum(x)
         
-        return jsonify({"Reporte": reporte})
+        
+        porcentaje = ((y_prom)/(x_prom))*100
+        print(porcentaje)
+        labels = 'Muertes(Tasa de mortalidad)', 'Infectados'
+
+        sizes = [porcentaje, 100-porcentaje]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, autopct='%1.1f%%',shadow=True, startangle=90)
+        ax1.axis('equal')
+        ax1.legend(labels)
+        ax1.set_title('Tasa de Mortalidad de ' + str(npais))
+        listagraficas[0] = fig1
+
+        return jsonify({"Reporte": "La tasa de mortalidad por COVID-19 en " + str(npais) + " es de " +str(round(porcentaje,1)) +"%"})
 
     elif(reporte == 24 ): #Comparación entre el número de casos detectados y el número de pruebas de un país.
+
         cpais = dataweb['cpais']
         npais = dataweb['npais']
         confirmados = dataweb['confirmados']
@@ -979,20 +1206,14 @@ def reportes():
         ax.set_ylabel('Casos')
         listagraficas[0] = fig
 
-        print(' --- Centroids --- ')
-        print(kmeans.cluster_centers_)
-
-
 
         return jsonify({"Reporte": "Con la siguiente gráfica se puede observar como hubieron diferentes "+
         "agrupaciones en donde se puede observar los cambios entre los casos y días "})
-
 
     elif(reporte == 25 ): #Predicción de casos confirmados por día
         prediccion = dataweb['predict']
         cdias = dataweb['cdias']
         casos = dataweb['casos']
-      
 
         x = np.asarray(df[cdias])
         y = np.asarray(df[casos])

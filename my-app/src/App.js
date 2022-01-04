@@ -4,6 +4,7 @@ import {useState,useEffect} from 'react';
 import { BrowserRouter, Route,Routes,Switch} from "react-router-dom";
 import {Deploy} from './Component/Deploy/Deploy'
 import Navbar from './Component/Navbar';
+import Inicio from "./Pages/Inicio";
 import Calc1 from "./Pages/Calc1";
 import Calc2 from "./Pages/Calc2";
 import Calc3 from "./Pages/Calc3";
@@ -38,7 +39,7 @@ function App() {
       <BrowserRouter>
         <Navbar/>
         <Routes>
-        
+          <Route exact path='/' element={<Inicio/>}></Route>
           <Route exact path='/calc1' element={<Calc1/>}></Route>
           <Route exact path='/calc2' element={<Calc2/>}></Route>
           <Route exact path='/calc3' element={<Calc3/>}></Route>
