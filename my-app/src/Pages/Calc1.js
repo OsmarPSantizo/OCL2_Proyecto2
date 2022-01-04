@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./pages.css"
-import {Form} from 'react-bootstrap'
+import {Form,Button} from 'react-bootstrap'
 
 import { Chart } from 'react-chartjs-2';
 
@@ -10,10 +10,22 @@ function  Calc1 (){
   const [casos2, setcasos] = useState("")
   const [fpais2, setfpais] = useState("")
   const [npais2, setnpais] = useState("")
-  const [respuestaa, setrespuesta] = useState("No se que reporte soy")
+  const [respuestaa, setrespuesta] = useState("")
+  const [grafica2, setgrafica] = useState();
    // Para el manejo de archivo
   const [contenidoArchvio, setcontenido]= useState("")
   const [tipoarchivo, setipoarchivo] = useState("")
+
+  async function getgrafica (event){
+    event.preventDefault()
+    const response = await fetch("https://powerful-tundra-15123.herokuapp.com/plot.png");
+    const data = await response.blob()
+    const imageObjectUrl = URL.createObjectURL(data)
+    setgrafica(imageObjectUrl)
+    
+  }
+
+
   const handleClick =(event) =>{
     event.preventDefault();
     const options ={
@@ -58,9 +70,9 @@ function  Calc1 (){
 
   
   return(
-  <div >
+  <div className="titulo">
    
-    <h1>Tendencia de la infección por Covid-19 en un País.</h1>
+    <strong className="Calc">Tendencia de la infección por Covid-19 en un País.</strong>
 
     <div className="row no-gutters">
         <div className = "col no-gutters">
@@ -68,6 +80,7 @@ function  Calc1 (){
           <div className = "leftside">
           
             <Form>
+            <h3>Carga de archivo</h3>
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Selecciona un archivo .csv, .xsls</Form.Label>
               <Form.Control type="file" name="file" onChange={(e)=> handleFile(e)}/>
@@ -87,25 +100,25 @@ function  Calc1 (){
               <Form.Control name="npais" placeholder="Nombre del pais" value={npais2} onChange={(e)=> setnpais(e.target.value)}></Form.Control>
               
               </Form.Group>
-          
               
               <br></br>
-              <button onClick={handleClick}>Consultar</button>
-              
-
-
-
+              <Button className="botones" onClick={handleClick}>Consultar</Button>
+            
             </Form>
          
           </div>
         </div>
         <div className ="col no-gutters">
           <div className = "rightside">
-          <h1>{respuestaa}</h1>
-          <h1>Graficaa</h1>
-
-   
-          <button>Descargar PDF</button>
+          
+          <b>Reporte</b>
+          <br></br>
+          <img  src={grafica2}/>  
+          <br></br>
+          <Button className="botones"onClick={getgrafica}>Mostrar Grafica</Button>
+          <h3>{respuestaa}</h3>
+          <br></br>
+          <Button className="botones">Descargar PDF</Button>
           </div>
         </div>
 

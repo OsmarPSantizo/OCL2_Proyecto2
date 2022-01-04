@@ -9,14 +9,12 @@ import Dropdown from './Dropdown';
 function Navbar(){
     const[dropdown,setDropdown]= useState(false);
 
-
-
     return (
         <>
         <nav className="navbar">
             <Link to="/" className="Navbar-logo">
-                DataScience
-                <Icons.FaTree/>
+               DataScience
+                
             </Link>
             <ul className="nav-items">
                 {navItems.map((item)=>{

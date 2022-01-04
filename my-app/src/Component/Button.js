@@ -4,10 +4,9 @@ import "./Button.css"
 
 function Button() {
     return (
-        <Link to="signup">
-            <button className="btn">Sign up</button>
-            
-        </Link>
+        <a href="https://github.com/OsmarPSantizo/OCL2_Proyecto2">
+            <button className="btn">Repositorio</button>
+        </a>
     )
 }
 

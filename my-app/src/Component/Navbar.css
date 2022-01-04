@@ -7,7 +7,7 @@
 
 }
 
-.navbar-logo{
+.Navbar-logo{
     color:white;
     text-decoration:none;
     font-size:2rem;
@@ -43,5 +43,5 @@
 }
 
 .nav-item a:hover{
-    background: rgb(0,212,222);
+    background: rgb(0,11,255);
 }

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./pages.css"
-import {Form} from 'react-bootstrap'
+import {Form,Button} from 'react-bootstrap'
 
 function Calc2(){
     const [departamento2, setdepartamento] = useState("")
@@ -8,10 +8,24 @@ function Calc2(){
     const [muertes2, setmuertes] = useState("")
     const [sdepartamento2, setsdepartamento] = useState("")
     const [predict2, setpredict] = useState("")
-    const [respuestaa, setrespuesta] = useState("No se que reporte soy")
+    const [grafica2, setgrafica] = useState();
+    const [respuestaa, setrespuesta] = useState("Ingrese la informacion para predecir")
      // Para el manejo de archivo
     const [contenidoArchvio, setcontenido]= useState("")
     const [tipoarchivo, setipoarchivo] = useState("")
+
+
+
+    async function getgrafica (event){
+      event.preventDefault()
+      const response = await fetch("https://powerful-tundra-15123.herokuapp.com/plot.png");
+      const data = await response.blob()
+      const imageObjectUrl = URL.createObjectURL(data)
+      setgrafica(imageObjectUrl)
+    }
+
+
+
     const handleClick =(event) =>{
       event.preventDefault();
       const options ={
@@ -58,14 +72,15 @@ function Calc2(){
 
 
     return(
-        <div>
-            <h1 className="Calc">Predicción de mortalidad por COVID en un Departamento.</h1>
+      <div className="titulo">
+            <strong className="Calc">Predicción de mortalidad por COVID en un Departamento.</strong>
         <div className="row no-gutters">
         <div className = "col no-gutters">
 
           <div className = "leftside">
           
             <Form>
+            <h3>Carga de archivo</h3>
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Selecciona un archivo .csv, .xsls</Form.Label>
               <Form.Control type="file" name="file" onChange={(e)=> handleFile(e)}/>
@@ -74,8 +89,8 @@ function Calc2(){
               <Form.Group>
               <Form.Label>Selecciona columna para Departamento</Form.Label>
               <Form.Control name="casos" placeholder="Columna para Departamento" value={departamento2} onChange={(e)=> setdepartamento(e.target.value)}></Form.Control>
-              <Form.Label>Selecciona la columna para Dias</Form.Label>
-              <Form.Control name="pais" placeholder="Columna para Pais" value={dias2} onChange={(e)=> setdias(e.target.value)}></Form.Control>
+              <Form.Label>Selecciona la columna para Fecha</Form.Label>
+              <Form.Control name="pais" placeholder="Columna para Fecha" value={dias2} onChange={(e)=> setdias(e.target.value)}></Form.Control>
               <Form.Label>Selecciona columna para Muertes</Form.Label>
               <Form.Control name="dias" placeholder="Columna para Muertes" value={muertes2} onChange={(e)=> setmuertes(e.target.value)}></Form.Control>
               </Form.Group>
@@ -83,14 +98,14 @@ function Calc2(){
               <Form.Group>
               <Form.Label>Ingresa el Departamento a calcular</Form.Label>
               <Form.Control name="npais" placeholder="Nombre del Departamento" value={sdepartamento2} onChange={(e)=> setsdepartamento(e.target.value)}></Form.Control>
-              <Form.Label>Dia a predecir</Form.Label>
-              <Form.Control name="predict" placeholder="Dia a predecir" value={predict2} onChange={(e)=> setpredict(e.target.value)}></Form.Control>
+              <Form.Label>Fecha a predecir</Form.Label>
+              <Form.Control name="predict" placeholder="Ingrese fecha a predecir YYYY-MM-DD" value={predict2} onChange={(e)=> setpredict(e.target.value)}></Form.Control>
               
               </Form.Group>
           
               
               <br></br>
-              <button onClick={handleClick}>Consultar</button>
+              <Button className="botones" onClick={handleClick}>Consultar</Button>
               
 
 
@@ -101,11 +116,13 @@ function Calc2(){
         </div>
         <div className ="col no-gutters">
           <div className = "rightside">
-          <h1>{respuestaa}</h1>
-          <h1>Graficaa</h1>
-
-   
-        
+          <h3>Grafica</h3>
+          <img  src={grafica2}/>  
+          <Button className="botones" onClick={getgrafica}>Mostrar Grafica</Button>
+          <h3>{respuestaa}</h3>
+          <br></br>
+          <Button className="botones">Descargar PDF</Button>
+  
           </div>
         </div>
 
