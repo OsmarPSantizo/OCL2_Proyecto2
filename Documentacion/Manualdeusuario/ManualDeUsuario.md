@@ -1,4 +1,6 @@
-﻿#Manual De Usuario La interfaz principal del programa tiene 3 opciones  
+﻿# Manual De Usuario 
+
+La interfaz principal del programa tiene 3 opciones  
 
 ![](Aspose.Words.ff3f45f9-e3c2-406f-babc-0dae6b577238.001.jpeg)
 
@@ -7,7 +9,7 @@
 ![](Aspose.Words.ff3f45f9-e3c2-406f-babc-0dae6b577238.002.jpeg)
 
 2. Acerca de mí: redirige a una página que contiene información del programador 
-2. Repositorio: Redirige al repositorio de GitHub donde está el código fuente de la aplicación 
+3. Repositorio: Redirige al repositorio de GitHub donde está el código fuente de la aplicación 
 
 Se requiere que se llenen algunos campos para poder realizar el cálculo 
 
